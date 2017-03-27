@@ -9,6 +9,7 @@ class ScreenObject {
 
 class Menu extends ScreenObject{
   Controller controller;
+  float timer;
   
   Menu(){
   }
@@ -18,11 +19,15 @@ class Menu extends ScreenObject{
   }
   
   void render(){
-    background(0);
+    //Skifter baggrundsfarve på menuen
+    timer += dt;
+    if(timer>0.017*15){
+    background(random(255),random(255),random(255));
+    timer=0;
+  }
   }
   
   void update(float dt){
-    
   }
   
   Controller getController(){
@@ -58,7 +63,7 @@ class QuitButton extends MenuDecorator{
   QuitButton(Menu set, float setX, float setY){
     super(set);
     pos = new PVector(setX, setY);
-    size = new PVector(80,20);
+    size = new PVector(500,125);
   }
   
   boolean overButton(){
@@ -105,7 +110,7 @@ class StartButton extends MenuDecorator{
   StartButton(Menu set, float setX, float setY){
     super(set);
     pos = new PVector(setX, setY);
-    size = new PVector(80,20);
+    size = new PVector(500,125);
   }
   
   boolean overButton(){
@@ -131,6 +136,7 @@ class StartButton extends MenuDecorator{
       selected = true;
       if (getController() != null) {
         if (getController().getSTATE() == 1){
+          currentGame = new Game();
           screenController = currentGame;
         }
       }
@@ -149,9 +155,10 @@ class GUI extends ScreenObject{
 
 class SplashScreen extends ScreenObject {
   float timer = 0;
-  PImage logo = loadImage("logo.png");
+  PImage logo = loadImage("coin.jpg");
   
   public void render(){
+    background(0);
     imageMode(CENTER);
     image(this.logo,width/2,height/2);
   }
@@ -159,8 +166,12 @@ class SplashScreen extends ScreenObject {
   void update(float dt){
     timer+= dt;
     
-    if (timer >= 3){
-      screenController = new StartButton(new QuitButton(new Menu(player1Controller), 100, 130), 100, 100); 
+    if (timer >= 5){
+      Menu newMenu = new Menu(player1Controller);
+      newMenu = new QuitButton(newMenu, 100, 350);
+      newMenu = new StartButton(newMenu, 100, 175);
+      
+      screenController = newMenu;
     }
   }
 }
